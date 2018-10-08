@@ -308,6 +308,10 @@
   bool VisitEnumExtensibilityAttr(EnumExtensibilityAttr *A) {
     return true; 
   }
+  bool TraverseExcludeFromExplicitInstantiationAttr(ExcludeFromExplicitInstantiationAttr *A);
+  bool VisitExcludeFromExplicitInstantiationAttr(ExcludeFromExplicitInstantiationAttr *A) {
+    return true; 
+  }
   bool TraverseExclusiveTrylockFunctionAttr(ExclusiveTrylockFunctionAttr *A);
   bool VisitExclusiveTrylockFunctionAttr(ExclusiveTrylockFunctionAttr *A) {
     return true; 
@@ -1775,6 +1779,15 @@ bool VISITORCLASS<Derived>::TraverseEnumExtensibilityAttr(EnumExtensibilityAttr 
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitEnumExtensibilityAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseExcludeFromExplicitInstantiationAttr(ExcludeFromExplicitInstantiationAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitExcludeFromExplicitInstantiationAttr(A))
     return false;
   return true;
 }
@@ -3679,6 +3692,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseEnableIfAttr(cast<EnableIfAttr>(A));
     case attr::EnumExtensibility:
       return getDerived().TraverseEnumExtensibilityAttr(cast<EnumExtensibilityAttr>(A));
+    case attr::ExcludeFromExplicitInstantiation:
+      return getDerived().TraverseExcludeFromExplicitInstantiationAttr(cast<ExcludeFromExplicitInstantiationAttr>(A));
     case attr::ExclusiveTrylockFunction:
       return getDerived().TraverseExclusiveTrylockFunctionAttr(cast<ExclusiveTrylockFunctionAttr>(A));
     case attr::ExternalSourceSymbol:

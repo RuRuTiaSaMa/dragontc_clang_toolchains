@@ -3046,6 +3046,30 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::EnumExtensibility; }
 };
 
+class ExcludeFromExplicitInstantiationAttr : public InheritableAttr {
+public:
+  static ExcludeFromExplicitInstantiationAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) ExcludeFromExplicitInstantiationAttr(Loc, Ctx, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  ExcludeFromExplicitInstantiationAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::ExcludeFromExplicitInstantiation, R, SI, false, false)
+  {
+  }
+
+  ExcludeFromExplicitInstantiationAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::ExcludeFromExplicitInstantiation; }
+};
+
 class ExclusiveTrylockFunctionAttr : public InheritableAttr {
 Expr * successValue;
 

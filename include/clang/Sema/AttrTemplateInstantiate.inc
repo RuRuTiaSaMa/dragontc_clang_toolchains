@@ -390,6 +390,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<EnumExtensibilityAttr>(At);
       return A->clone(C);
     }
+    case attr::ExcludeFromExplicitInstantiation: {
+      const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
+      return A->clone(C);
+    }
     case attr::ExclusiveTrylockFunction: {
       const auto *A = cast<ExclusiveTrylockFunctionAttr>(At);
       Expr * tempInstSuccessValue;
@@ -1449,6 +1453,10 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     }
     case attr::EnumExtensibility: {
       return nullptr;
+    }
+    case attr::ExcludeFromExplicitInstantiation: {
+      const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
+      return A->clone(C);
     }
     case attr::ExclusiveTrylockFunction: {
       return nullptr;

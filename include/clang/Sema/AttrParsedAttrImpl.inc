@@ -935,6 +935,21 @@ static void matchRulesForEnumExtensibility(llvm::SmallVectorImpl<std::pair<attr:
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_enum, /*IsSupported=*/true));
 }
 
+static bool checkExcludeFromExplicitInstantiationAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<VarDecl>(D) && !isa<FunctionDecl>(D) && !isa<CXXRecordDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "variables, functions, and classes";
+    return false;
+  }
+  return true;
+}
+
+static void matchRulesForExcludeFromExplicitInstantiation(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
+}
+
 static bool checkExclusiveTrylockFunctionAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
   if (!D || (!isa<FunctionDecl>(D))) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -2823,6 +2838,7 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 0, 0, 0, 1, 0, 0, 0, 0, checkEmptyBasesAppertainsTo, defaultDiagnoseLangOpts, isTargetx86x86_64armthumbaarch64Microsoft, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_EmptyBases
   { 2, 0, 0, 0, 0, 0, 0, 1, checkEnableIfAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForEnableIf },  // AT_EnableIf
   { 1, 0, 0, 0, 0, 0, 0, 1, checkEnumExtensibilityAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForEnumExtensibility },  // AT_EnumExtensibility
+  { 0, 0, 0, 0, 0, 0, 0, 1, checkExcludeFromExplicitInstantiationAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForExcludeFromExplicitInstantiation },  // AT_ExcludeFromExplicitInstantiation
   { 1, 15, 0, 0, 0, 0, 0, 0, checkExclusiveTrylockFunctionAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_ExclusiveTrylockFunction
   { 1, 0, 0, 0, 0, 0, 0, 0, checkExtVectorTypeAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_ExtVectorType
   { 0, 3, 1, 0, 0, 0, 0, 1, checkExternalSourceSymbolAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForExternalSourceSymbol },  // AT_ExternalSourceSymbol

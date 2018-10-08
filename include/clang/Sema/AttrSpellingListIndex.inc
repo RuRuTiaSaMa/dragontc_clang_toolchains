@@ -544,6 +544,15 @@
         return 2;
     break;
   }
+  case AT_ExcludeFromExplicitInstantiation: {
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_ExclusiveTrylockFunction: {
     if (Name == "exclusive_trylock_function" && SyntaxUsed == 0 && Scope == "")
         return 0;

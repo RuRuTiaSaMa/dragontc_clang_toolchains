@@ -5087,6 +5087,8 @@
     ppc_qpx_qvstfiwa,                          // llvm.ppc.qpx.qvstfiwa
     ppc_qpx_qvstfs,                            // llvm.ppc.qpx.qvstfs
     ppc_qpx_qvstfsa,                           // llvm.ppc.qpx.qvstfsa
+    ppc_scalar_extract_expq,                   // llvm.ppc.scalar.extract.expq
+    ppc_scalar_insert_exp_qp,                  // llvm.ppc.scalar.insert.exp.qp
     ppc_set_texasr,                            // llvm.ppc.set.texasr
     ppc_set_texasru,                           // llvm.ppc.set.texasru
     ppc_set_tfhar,                             // llvm.ppc.set.tfhar
@@ -5432,9 +5434,14 @@
     s390_vupllb,                               // llvm.s390.vupllb
     s390_vupllf,                               // llvm.s390.vupllf
     s390_vupllh,                               // llvm.s390.vupllh
+    wasm_add_saturate_signed,                  // llvm.wasm.add.saturate.signed
+    wasm_add_saturate_unsigned,                // llvm.wasm.add.saturate.unsigned
+    wasm_alltrue,                              // llvm.wasm.alltrue
+    wasm_anytrue,                              // llvm.wasm.anytrue
     wasm_atomic_notify,                        // llvm.wasm.atomic.notify
     wasm_atomic_wait_i32,                      // llvm.wasm.atomic.wait.i32
     wasm_atomic_wait_i64,                      // llvm.wasm.atomic.wait.i64
+    wasm_bitselect,                            // llvm.wasm.bitselect
     wasm_catch,                                // llvm.wasm.catch
     wasm_current_memory,                       // llvm.wasm.current.memory
     wasm_get_ehselector,                       // llvm.wasm.get.ehselector
@@ -5447,6 +5454,8 @@
     wasm_memory_grow,                          // llvm.wasm.memory.grow
     wasm_memory_size,                          // llvm.wasm.memory.size
     wasm_rethrow,                              // llvm.wasm.rethrow
+    wasm_sub_saturate_signed,                  // llvm.wasm.sub.saturate.signed
+    wasm_sub_saturate_unsigned,                // llvm.wasm.sub.saturate.unsigned
     wasm_throw,                                // llvm.wasm.throw
     x86_3dnow_pavgusb,                         // llvm.x86.3dnow.pavgusb
     x86_3dnow_pf2id,                           // llvm.x86.3dnow.pf2id

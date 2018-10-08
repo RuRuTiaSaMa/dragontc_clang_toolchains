@@ -3106,6 +3106,48 @@ const char *EnumExtensibilityAttr::getSpelling() const {
   }
 }
 
+ExcludeFromExplicitInstantiationAttr *ExcludeFromExplicitInstantiationAttr::clone(ASTContext &C) const {
+  auto *A = new (C) ExcludeFromExplicitInstantiationAttr(getLocation(), C, getSpellingListIndex());
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->Implicit = Implicit;
+  return A;
+}
+
+void ExcludeFromExplicitInstantiationAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << " __attribute__((exclude_from_explicit_instantiation))";
+    break;
+  }
+  case 1 : {
+    OS << " [[clang::exclude_from_explicit_instantiation]]";
+    break;
+  }
+  case 2 : {
+    OS << " [[clang::exclude_from_explicit_instantiation]]";
+    break;
+  }
+}
+}
+
+const char *ExcludeFromExplicitInstantiationAttr::getSpelling() const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "exclude_from_explicit_instantiation";
+  case 1:
+    return "exclude_from_explicit_instantiation";
+  case 2:
+    return "exclude_from_explicit_instantiation";
+  }
+}
+
 ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::clone(ASTContext &C) const {
   auto *A = new (C) ExclusiveTrylockFunctionAttr(getLocation(), C, successValue, args_, args_Size, getSpellingListIndex());
   A->Inherited = Inherited;
@@ -10366,6 +10408,8 @@ const char *Attr::getSpelling() const {
     return cast<EnableIfAttr>(this)->getSpelling();
   case attr::EnumExtensibility:
     return cast<EnumExtensibilityAttr>(this)->getSpelling();
+  case attr::ExcludeFromExplicitInstantiation:
+    return cast<ExcludeFromExplicitInstantiationAttr>(this)->getSpelling();
   case attr::ExclusiveTrylockFunction:
     return cast<ExclusiveTrylockFunctionAttr>(this)->getSpelling();
   case attr::ExternalSourceSymbol:
@@ -10884,6 +10928,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<EnableIfAttr>(this)->clone(C);
   case attr::EnumExtensibility:
     return cast<EnumExtensibilityAttr>(this)->clone(C);
+  case attr::ExcludeFromExplicitInstantiation:
+    return cast<ExcludeFromExplicitInstantiationAttr>(this)->clone(C);
   case attr::ExclusiveTrylockFunction:
     return cast<ExclusiveTrylockFunctionAttr>(this)->clone(C);
   case attr::ExternalSourceSymbol:
@@ -11402,6 +11448,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<EnableIfAttr>(this)->printPretty(OS, Policy);
   case attr::EnumExtensibility:
     return cast<EnumExtensibilityAttr>(this)->printPretty(OS, Policy);
+  case attr::ExcludeFromExplicitInstantiation:
+    return cast<ExcludeFromExplicitInstantiationAttr>(this)->printPretty(OS, Policy);
   case attr::ExclusiveTrylockFunction:
     return cast<ExclusiveTrylockFunctionAttr>(this)->printPretty(OS, Policy);
   case attr::ExternalSourceSymbol:

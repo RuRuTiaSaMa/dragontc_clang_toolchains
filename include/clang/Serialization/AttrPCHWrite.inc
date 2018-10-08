@@ -611,6 +611,13 @@ Record.push_back(SA->getDiagnosticType());
 Record.push_back(SA->getExtensibility());
     break;
   }
+  case attr::ExcludeFromExplicitInstantiation: {
+    const auto *SA = cast<ExcludeFromExplicitInstantiationAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::ExclusiveTrylockFunction: {
     const auto *SA = cast<ExclusiveTrylockFunctionAttr>(A);
     Record.push_back(SA->isInherited());

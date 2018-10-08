@@ -1426,10 +1426,19 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
     if (memcmp(Name.data()+0, "objc_requires_property_definitions", 34) != 0)
       break;
     return ParsedAttr::AT_ObjCRequiresPropertyDefs;	 // "objc_requires_property_definitions"
-  case 35:	 // 1 string to match.
-    if (memcmp(Name.data()+0, "objc_arc_weak_reference_unavailable", 35) != 0)
-      break;
-    return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "objc_arc_weak_reference_unavailable"
+  case 35:	 // 2 strings to match.
+    switch (Name[0]) {
+    default: break;
+    case 'e':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "xclude_from_explicit_instantiation", 34) != 0)
+        break;
+      return ParsedAttr::AT_ExcludeFromExplicitInstantiation;	 // "exclude_from_explicit_instantiation"
+    case 'o':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "bjc_arc_weak_reference_unavailable", 34) != 0)
+        break;
+      return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "objc_arc_weak_reference_unavailable"
+    }
+    break;
   case 46:	 // 1 string to match.
     if (memcmp(Name.data()+0, "objc_protocol_requires_explicit_implementation", 46) != 0)
       break;
@@ -2999,10 +3008,21 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
     if (memcmp(Name.data()+0, "clang::objc_requires_property_definitions", 41) != 0)
       break;
     return ParsedAttr::AT_ObjCRequiresPropertyDefs;	 // "clang::objc_requires_property_definitions"
-  case 42:	 // 1 string to match.
-    if (memcmp(Name.data()+0, "clang::objc_arc_weak_reference_unavailable", 42) != 0)
+  case 42:	 // 2 strings to match.
+    if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
-    return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "clang::objc_arc_weak_reference_unavailable"
+    switch (Name[7]) {
+    default: break;
+    case 'e':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "xclude_from_explicit_instantiation", 34) != 0)
+        break;
+      return ParsedAttr::AT_ExcludeFromExplicitInstantiation;	 // "clang::exclude_from_explicit_instantiation"
+    case 'o':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "bjc_arc_weak_reference_unavailable", 34) != 0)
+        break;
+      return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "clang::objc_arc_weak_reference_unavailable"
+    }
+    break;
   case 53:	 // 1 string to match.
     if (memcmp(Name.data()+0, "clang::objc_protocol_requires_explicit_implementation", 53) != 0)
       break;
@@ -3572,10 +3592,21 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
     if (memcmp(Name.data()+0, "clang::objc_requires_property_definitions", 41) != 0)
       break;
     return ParsedAttr::AT_ObjCRequiresPropertyDefs;	 // "clang::objc_requires_property_definitions"
-  case 42:	 // 1 string to match.
-    if (memcmp(Name.data()+0, "clang::objc_arc_weak_reference_unavailable", 42) != 0)
+  case 42:	 // 2 strings to match.
+    if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
-    return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "clang::objc_arc_weak_reference_unavailable"
+    switch (Name[7]) {
+    default: break;
+    case 'e':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "xclude_from_explicit_instantiation", 34) != 0)
+        break;
+      return ParsedAttr::AT_ExcludeFromExplicitInstantiation;	 // "clang::exclude_from_explicit_instantiation"
+    case 'o':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "bjc_arc_weak_reference_unavailable", 34) != 0)
+        break;
+      return ParsedAttr::AT_ArcWeakrefUnavailable;	 // "clang::objc_arc_weak_reference_unavailable"
+    }
+    break;
   case 53:	 // 1 string to match.
     if (memcmp(Name.data()+0, "clang::objc_protocol_requires_explicit_implementation", 53) != 0)
       break;

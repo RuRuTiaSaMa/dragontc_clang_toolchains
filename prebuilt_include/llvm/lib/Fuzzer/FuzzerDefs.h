@@ -28,7 +28,6 @@
 #define LIBFUZZER_LINUX 1
 #define LIBFUZZER_NETBSD 0
 #define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 0
 #define LIBFUZZER_WINDOWS 0
 #elif __APPLE__
 #define LIBFUZZER_APPLE 1
@@ -36,7 +35,6 @@
 #define LIBFUZZER_LINUX 0
 #define LIBFUZZER_NETBSD 0
 #define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 0
 #define LIBFUZZER_WINDOWS 0
 #elif __NetBSD__
 #define LIBFUZZER_APPLE 0
@@ -44,7 +42,6 @@
 #define LIBFUZZER_LINUX 0
 #define LIBFUZZER_NETBSD 1
 #define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 0
 #define LIBFUZZER_WINDOWS 0
 #elif __FreeBSD__
 #define LIBFUZZER_APPLE 0
@@ -52,15 +49,6 @@
 #define LIBFUZZER_LINUX 0
 #define LIBFUZZER_NETBSD 0
 #define LIBFUZZER_FREEBSD 1
-#define LIBFUZZER_OPENBSD 0
-#define LIBFUZZER_WINDOWS 0
-#elif __OpenBSD__
-#define LIBFUZZER_APPLE 0
-#define LIBFUZZER_FUCHSIA 0
-#define LIBFUZZER_LINUX 0
-#define LIBFUZZER_NETBSD 0
-#define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 1
 #define LIBFUZZER_WINDOWS 0
 #elif _WIN32
 #define LIBFUZZER_APPLE 0
@@ -68,7 +56,6 @@
 #define LIBFUZZER_LINUX 0
 #define LIBFUZZER_NETBSD 0
 #define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 0
 #define LIBFUZZER_WINDOWS 1
 #elif __Fuchsia__
 #define LIBFUZZER_APPLE 0
@@ -76,7 +63,6 @@
 #define LIBFUZZER_LINUX 0
 #define LIBFUZZER_NETBSD 0
 #define LIBFUZZER_FREEBSD 0
-#define LIBFUZZER_OPENBSD 0
 #define LIBFUZZER_WINDOWS 0
 #else
 #error "Support for your platform has not been implemented"
@@ -86,9 +72,7 @@
 #  define __has_attribute(x) 0
 #endif
 
-#define LIBFUZZER_POSIX                                                        \
-  (LIBFUZZER_APPLE || LIBFUZZER_LINUX || LIBFUZZER_NETBSD ||                   \
-   LIBFUZZER_FREEBSD || LIBFUZZER_OPENBSD)
+#define LIBFUZZER_POSIX (LIBFUZZER_APPLE || LIBFUZZER_LINUX || LIBFUZZER_NETBSD || LIBFUZZER_FREEBSD)
 
 #ifdef __x86_64
 #  if __has_attribute(target)
@@ -185,6 +169,10 @@ inline uint64_t Bswap(uint64_t x) { return __builtin_bswap64(x); }
 uint8_t *ExtraCountersBegin();
 uint8_t *ExtraCountersEnd();
 void ClearExtraCounters();
+
+uint64_t *ClangCountersBegin();
+uint64_t *ClangCountersEnd();
+void ClearClangCounters();
 
 }  // namespace fuzzer
 

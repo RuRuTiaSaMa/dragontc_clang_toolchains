@@ -782,6 +782,15 @@
     New->setImplicit(isImplicit);
     break;
   }
+  case attr::ExcludeFromExplicitInstantiation: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) ExcludeFromExplicitInstantiationAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
   case attr::ExclusiveTrylockFunction: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();

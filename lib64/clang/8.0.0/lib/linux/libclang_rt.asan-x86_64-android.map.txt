@@ -564,7 +564,6 @@ LIBCLANG_RT_ASAN {
     remquof;
     remquol;
     __sancov_default_options;
-    __sanitizer_acquire_crash_state;
     __sanitizer_annotate_contiguous_container;
     __sanitizer_contiguous_container_find_bad_address;
     __sanitizer_cov_8bit_counters_init;

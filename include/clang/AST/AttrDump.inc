@@ -411,6 +411,9 @@
     }
     break;
   }
+  case attr::ExcludeFromExplicitInstantiation: {
+    break;
+  }
   case attr::ExclusiveTrylockFunction: {
     const auto *SA = cast<ExclusiveTrylockFunctionAttr>(A);
     dumpStmt(SA->getSuccessValue());

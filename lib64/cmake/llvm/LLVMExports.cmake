@@ -553,7 +553,7 @@ set_target_properties(LLVMAsmParser PROPERTIES
 add_library(LLVMLineEditor STATIC IMPORTED)
 
 set_target_properties(LLVMLineEditor PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMSupport;edit;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "LLVMSupport;LLVMSupport"
 )
 
 # Create imported target LLVMProfileData
@@ -595,14 +595,14 @@ set_target_properties(LLVMLibDriver PROPERTIES
 add_library(LLVMXRay STATIC IMPORTED)
 
 set_target_properties(LLVMXRay PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMSupport;LLVMObject"
+  INTERFACE_LINK_LIBRARIES "LLVMSupport;LLVMObject;LLVMObject;LLVMSupport"
 )
 
 # Create imported target LLVMWindowsManifest
 add_library(LLVMWindowsManifest STATIC IMPORTED)
 
 set_target_properties(LLVMWindowsManifest PROPERTIES
-  INTERFACE_LINK_LIBRARIES "xml2;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "LLVMSupport"
 )
 
 # Create imported target PollyISL
