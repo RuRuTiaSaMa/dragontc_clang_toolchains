@@ -314,6 +314,16 @@ set_target_properties(LLVMMCDisassembler PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMMCDisassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMMCDisassembler "${_IMPORT_PREFIX}/lib64/libLLVMMCDisassembler.a" )
 
+# Import target "LLVMMCA" for configuration "Release"
+set_property(TARGET LLVMMCA APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMMCA PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMMCA.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMMCA )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMMCA "${_IMPORT_PREFIX}/lib64/libLLVMMCA.a" )
+
 # Import target "LLVMObject" for configuration "Release"
 set_property(TARGET LLVMObject APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMObject PROPERTIES
@@ -343,6 +353,16 @@ set_target_properties(LLVMOption PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMOption )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOption "${_IMPORT_PREFIX}/lib64/libLLVMOption.a" )
+
+# Import target "LLVMOptRemarks" for configuration "Release"
+set_property(TARGET LLVMOptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMOptRemarks PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMOptRemarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOptRemarks "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a" )
 
 # Import target "LLVMDebugInfoDWARF" for configuration "Release"
 set_property(TARGET LLVMDebugInfoDWARF APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -773,6 +793,16 @@ set_target_properties(LLVMPasses PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMPasses )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMPasses "${_IMPORT_PREFIX}/lib64/libLLVMPasses.a" )
+
+# Import target "LLVMTextAPI" for configuration "Release"
+set_property(TARGET LLVMTextAPI APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMTextAPI PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMTextAPI.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMTextAPI )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMTextAPI "${_IMPORT_PREFIX}/lib64/libLLVMTextAPI.a" )
 
 # Import target "LLVMDlltoolDriver" for configuration "Release"
 set_property(TARGET LLVMDlltoolDriver APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -1306,6 +1336,16 @@ set_target_properties(opt PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS opt )
 list(APPEND _IMPORT_CHECK_FILES_FOR_opt "${_IMPORT_PREFIX}/bin/opt" )
+
+# Import target "OptRemarks" for configuration "Release"
+set_property(TARGET OptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(OptRemarks PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.8svn"
+  IMPORTED_SONAME_RELEASE "libOptRemarks.so.8svn"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS OptRemarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_OptRemarks "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.8svn" )
 
 # Import target "sancov" for configuration "Release"
 set_property(TARGET sancov APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)

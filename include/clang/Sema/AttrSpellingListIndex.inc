@@ -7,6 +7,15 @@
 \*===----------------------------------------------------------------------===*/
 
   switch (AttrKind) {
+  case AT_AArch64VectorPcs: {
+    if (Name == "aarch64_vector_pcs" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "aarch64_vector_pcs" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "aarch64_vector_pcs" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_AMDGPUFlatWorkGroupSize: {
     if (Name == "amdgpu_flat_work_group_size" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -313,6 +322,8 @@
         return 1;
     if (Name == "cpu_dispatch" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
+    if (Name == "cpu_dispatch" && SyntaxUsed == 3 && Scope == "")
+        return 3;
     break;
   }
   case AT_CPUSpecific: {
@@ -322,6 +333,8 @@
         return 1;
     if (Name == "cpu_specific" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
+    if (Name == "cpu_specific" && SyntaxUsed == 3 && Scope == "")
+        return 3;
     break;
   }
   case AT_CUDAConstant: {
@@ -482,6 +495,9 @@
         return 2;
     break;
   }
+  case AT_DLLExportStaticLocal: {
+    break;
+  }
   case AT_DLLImport: {
     if (Name == "dllimport" && SyntaxUsed == 3 && Scope == "")
         return 0;
@@ -489,6 +505,9 @@
         return 1;
     if (Name == "dllimport" && SyntaxUsed == 1 && Scope == "gnu")
         return 2;
+    break;
+  }
+  case AT_DLLImportStaticLocal: {
     break;
   }
   case AT_Deprecated: {
@@ -943,6 +962,15 @@
         return 1;
     break;
   }
+  case AT_NoDeref: {
+    if (Name == "noderef" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "noderef" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "noderef" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_NoDestroy: {
     if (Name == "no_destroy" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -1084,6 +1112,42 @@
     if (Name == "not_tail_called" && SyntaxUsed == 1 && Scope == "clang")
         return 1;
     if (Name == "not_tail_called" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_OSConsumed: {
+    if (Name == "os_consumed" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "os_consumed" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "os_consumed" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_OSConsumesThis: {
+    if (Name == "os_consumes_this" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "os_consumes_this" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "os_consumes_this" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_OSReturnsNotRetained: {
+    if (Name == "os_returns_not_retained" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "os_returns_not_retained" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "os_returns_not_retained" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_OSReturnsRetained: {
+    if (Name == "os_returns_retained" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "os_returns_retained" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "os_returns_retained" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
     break;
   }
@@ -1647,6 +1711,15 @@
         return 0;
     break;
   }
+  case AT_SpeculativeLoadHardening: {
+    if (Name == "speculative_load_hardening" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "speculative_load_hardening" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "speculative_load_hardening" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_StdCall: {
     if (Name == "stdcall" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -1813,6 +1886,13 @@
         return 1;
     if (Name == "unavailable" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
+    break;
+  }
+  case AT_Uninitialized: {
+    if (Name == "uninitialized" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "uninitialized" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
     break;
   }
   case AT_Unused: {

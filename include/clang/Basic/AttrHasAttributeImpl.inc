@@ -10,6 +10,7 @@ const llvm::Triple &T = Target.getTriple();
 switch (Syntax) {
 case AttrSyntax::GNU:
   return llvm::StringSwitch<int>(Name)
+    .Case("aarch64_vector_pcs", 1)
     .Case("amdgpu_flat_work_group_size", 1)
     .Case("amdgpu_num_sgpr", 1)
     .Case("amdgpu_num_vgpr", 1)
@@ -162,6 +163,7 @@ case AttrSyntax::GNU:
     .Case("neon_vector_type", 1)
     .Case("nocommon", 1)
     .Case("nodebug", 1)
+    .Case("noderef", 1)
     .Case("no_destroy", 1)
     .Case("noduplicate", 1)
     .Case("noescape", 1)
@@ -194,6 +196,10 @@ case AttrSyntax::GNU:
     .Case("nonnull", 1)
     .Case("not_tail_called", 1)
     .Case("nv_weak", 1)
+    .Case("os_consumed", 1)
+    .Case("os_consumes_this", 1)
+    .Case("os_returns_not_retained", 1)
+    .Case("os_returns_retained", 1)
     .Case("objc_boxable", 1)
     .Case("objc_bridge", 1)
     .Case("objc_bridge_mutable", 1)
@@ -287,6 +293,7 @@ case AttrSyntax::GNU:
     .Case("sentinel", 1)
     .Case("set_typestate", 1)
     .Case("shared_trylock_function", 1)
+    .Case("speculative_load_hardening", 1)
     .Case("stdcall", 1)
     .Case("swiftcall", 1)
     .Case("swift_context", 1)
@@ -306,6 +313,7 @@ case AttrSyntax::GNU:
     .Case("type_tag_for_datatype", 1)
     .Case("type_visibility", 1)
     .Case("unavailable", 1)
+    .Case("uninitialized", 1)
     .Case("unused", 1)
     .Case("used", 1)
     .Case("vecreturn", 1)
@@ -329,6 +337,8 @@ case AttrSyntax::GNU:
 case AttrSyntax::Declspec:
   return llvm::StringSwitch<int>(Name)
     .Case("align", 1)
+    .Case("cpu_dispatch", 1)
+    .Case("cpu_specific", 1)
     .Case("__constant__", 1)
     .Case("__cudart_builtin__", 1)
     .Case("__device__", 1)
@@ -394,7 +404,7 @@ case AttrSyntax::Pragma:
     .Case("declare target", 1)
     .Default(0);
 case AttrSyntax::CXX: {
-if (!Scope || Scope->getName() == "") {
+if (ScopeName == "") {
   return llvm::StringSwitch<int>(Name)
     .Case("noreturn", LangOpts.CPlusPlus11 ? 200809 : 0)
     .Case("carries_dependency", LangOpts.CPlusPlus11 ? 200809 : 0)
@@ -408,8 +418,9 @@ if (!Scope || Scope->getName() == "") {
     .Case("warn_unused_result", LangOpts.CPlusPlus11 ? 201603 : 0)
     .Case("warn_unused_result", LangOpts.CPlusPlus11 ? 201603 : 0)
     .Default(0);
-} else if (Scope->getName() == "clang") {
+} else if (ScopeName == "clang") {
   return llvm::StringSwitch<int>(Name)
+    .Case("aarch64_vector_pcs", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("amdgpu_flat_work_group_size", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("amdgpu_num_sgpr", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("amdgpu_num_vgpr", LangOpts.CPlusPlus11 ? 1 : 0)
@@ -471,6 +482,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("ns_returns_retained", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("neon_polyvector_type", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("neon_vector_type", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("noderef", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("no_destroy", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("noduplicate", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("noescape", LangOpts.CPlusPlus11 ? 1 : 0)
@@ -479,6 +491,10 @@ if (!Scope || Scope->getName() == "") {
     .Case("no_stack_protector", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("no_thread_safety_analysis", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("not_tail_called", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("os_consumed", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("os_consumes_this", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("os_returns_not_retained", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("os_returns_retained", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("objc_boxable", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("objc_bridge", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("objc_bridge_mutable", LangOpts.CPlusPlus11 ? 1 : 0)
@@ -553,6 +569,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("return_typestate", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("scoped_lockable", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("set_typestate", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("speculative_load_hardening", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("swiftcall", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("swift_context", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("swift_error_result", LangOpts.CPlusPlus11 ? 1 : 0)
@@ -566,6 +583,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("type_tag_for_datatype", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("type_visibility", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("unavailable", LangOpts.CPlusPlus11 ? 1 : 0)
+    .Case("uninitialized", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("vecreturn", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("vectorcall", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("warn_unused_result", LangOpts.CPlusPlus11 ? 201603 : 0)
@@ -576,7 +594,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("xray_never_instrument", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("xray_log_args", LangOpts.CPlusPlus11 ? 1 : 0)
     .Default(0);
-} else if (Scope->getName() == "gnu") {
+} else if (ScopeName == "gnu") {
   return llvm::StringSwitch<int>(Name)
     .Case("interrupt", true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb) && LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("interrupt", true && (T.getArch() == llvm::Triple::avr) && LangOpts.CPlusPlus11 ? 1 : 0)
@@ -677,22 +695,23 @@ if (!Scope || Scope->getName() == "") {
     .Case("weakref", LangOpts.CPlusPlus11 ? 1 : 0)
     .Case("force_align_arg_pointer", true && (T.getArch() == llvm::Triple::x86 || T.getArch() == llvm::Triple::x86_64) && LangOpts.CPlusPlus11 ? 1 : 0)
     .Default(0);
-} else if (Scope->getName() == "gsl") {
+} else if (ScopeName == "gsl") {
   return llvm::StringSwitch<int>(Name)
     .Case("suppress", LangOpts.CPlusPlus11 ? 1 : 0)
     .Default(0);
 }
 } break;
 case AttrSyntax::C: {
-if (!Scope || Scope->getName() == "") {
+if (ScopeName == "") {
   return llvm::StringSwitch<int>(Name)
     .Case("deprecated", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("fallthrough", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("maybe_unused", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("nodiscard", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Default(0);
-} else if (Scope->getName() == "clang") {
+} else if (ScopeName == "clang") {
   return llvm::StringSwitch<int>(Name)
+    .Case("aarch64_vector_pcs", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("address_space", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("annotate", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("objc_arc_weak_reference_unavailable", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
@@ -729,6 +748,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("ns_returns_retained", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("neon_polyvector_type", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("neon_vector_type", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("noderef", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("noduplicate", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("noescape", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("no_sanitize", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
@@ -736,6 +756,10 @@ if (!Scope || Scope->getName() == "") {
     .Case("no_stack_protector", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("no_thread_safety_analysis", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("not_tail_called", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("os_consumed", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("os_consumes_this", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("os_returns_not_retained", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("os_returns_retained", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("objc_boxable", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("objc_bridge", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("objc_bridge_mutable", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
@@ -771,6 +795,7 @@ if (!Scope || Scope->getName() == "") {
     .Case("pass_object_size", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("preserve_all", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("preserve_most", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
+    .Case("speculative_load_hardening", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("swiftcall", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("swift_context", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)
     .Case("swift_error_result", LangOpts.DoubleSquareBracketAttributes ? 1 : 0)

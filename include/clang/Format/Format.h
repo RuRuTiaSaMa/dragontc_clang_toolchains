@@ -22,15 +22,17 @@
 #include "llvm/Support/Regex.h"
 #include <system_error>
 
+namespace llvm {
+namespace vfs {
+class FileSystem;
+}
+} // namespace llvm
+
 namespace clang {
 
 class Lexer;
 class SourceManager;
 class DiagnosticConsumer;
-
-namespace vfs {
-class FileSystem;
-}
 
 namespace format {
 
@@ -531,20 +533,17 @@ struct FormatStyle {
     /// \code
     ///   try {
     ///     foo();
-    ///   } catch () {
+    ///   }
+    ///   catch () {
     ///   }
     ///   void foo() { bar(); }
-    ///   class foo
-    ///   {
+    ///   class foo {
     ///   };
     ///   if (foo()) {
-    ///   } else {
     ///   }
-    ///   enum X : int
-    ///   {
-    ///     A,
-    ///     B
-    ///   };
+    ///   else {
+    ///   }
+    ///   enum X : int { A, B };
     /// \endcode
     BS_Stroustrup,
     /// Always break before braces.
@@ -1129,6 +1128,37 @@ struct FormatStyle {
   ///    LoooooooooooooooooooooooooooooooongFunctionDeclaration();
   /// \endcode
   bool IndentWrappedFunctionNames;
+
+  /// A vector of prefixes ordered by the desired groups for Java imports.
+  ///
+  /// Each group is seperated by a newline. Static imports will also follow the
+  /// same grouping convention above all non-static imports. One group's prefix
+  /// can be a subset of another - the longest prefix is always matched. Within
+  /// a group, the imports are ordered lexicographically.
+  ///
+  /// In the .clang-format configuration file, this can be configured like
+  /// in the following yaml example. This will result in imports being
+  /// formatted as in the Java example below.
+  /// \code{.yaml}
+  ///   JavaImportGroups: ['com.example', 'com', 'org']
+  /// \endcode
+  ///
+  /// \code{.java}
+  ///    import static com.example.function1;
+  ///
+  ///    import static com.test.function2;
+  ///
+  ///    import static org.example.function3;
+  ///
+  ///    import com.example.ClassA;
+  ///    import com.example.Test;
+  ///    import com.example.a.ClassB;
+  ///
+  ///    import com.test.ClassC;
+  ///
+  ///    import org.example.ClassD;
+  /// \endcode
+  std::vector<std::string> JavaImportGroups;
 
   /// Quotation styles for JavaScript strings. Does not affect template
   /// strings.
@@ -1734,6 +1764,7 @@ struct FormatStyle {
            IndentPPDirectives == R.IndentPPDirectives &&
            IndentWidth == R.IndentWidth && Language == R.Language &&
            IndentWrappedFunctionNames == R.IndentWrappedFunctionNames &&
+           JavaImportGroups == R.JavaImportGroups &&
            JavaScriptQuotes == R.JavaScriptQuotes &&
            JavaScriptWrapImports == R.JavaScriptWrapImports &&
            KeepEmptyLinesAtTheStartOfBlocks ==
@@ -2009,7 +2040,7 @@ extern const char *DefaultFallbackStyle;
 llvm::Expected<FormatStyle> getStyle(StringRef StyleName, StringRef FileName,
                                      StringRef FallbackStyle,
                                      StringRef Code = "",
-                                     vfs::FileSystem *FS = nullptr);
+                                     llvm::vfs::FileSystem *FS = nullptr);
 
 // Guesses the language from the ``FileName`` and ``Code`` to be formatted.
 // Defaults to FormatStyle::LK_Cpp.

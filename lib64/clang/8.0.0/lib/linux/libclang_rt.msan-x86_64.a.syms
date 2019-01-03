@@ -92,6 +92,7 @@
   __interceptor_asctime;
   __interceptor_asctime_r;
   __interceptor_asprintf;
+  __interceptor_atexit;
   __interceptor_backtrace;
   __interceptor_backtrace_symbols;
   __interceptor_bcopy;
@@ -366,11 +367,15 @@
   __interceptor_sendmmsg;
   __interceptor_sendmsg;
   __interceptor_sendto;
+  __interceptor_setbuf;
+  __interceptor_setbuffer;
   __interceptor_setenv;
   __interceptor_setgrent;
   __interceptor_setitimer;
+  __interceptor_setlinebuf;
   __interceptor_setlocale;
   __interceptor_setpwent;
+  __interceptor_setvbuf;
   __interceptor_shmat;
   __interceptor_shmctl;
   __interceptor_sigaction;
@@ -1317,6 +1322,7 @@
   asctime;
   asctime_r;
   asprintf;
+  atexit;
   backtrace;
   backtrace_symbols;
   bcopy;
@@ -1587,11 +1593,15 @@
   sendmmsg;
   sendmsg;
   sendto;
+  setbuf;
+  setbuffer;
   setenv;
   setgrent;
   setitimer;
+  setlinebuf;
   setlocale;
   setpwent;
+  setvbuf;
   shmat;
   shmctl;
   sigaction;

@@ -113,6 +113,8 @@
   __interceptor_fclose;
   __interceptor_fdopen;
   __interceptor_fflush;
+  __interceptor_fgetgrent_r;
+  __interceptor_fgetpwent_r;
   __interceptor_fgets;
   __interceptor_fgetxattr;
   __interceptor_flistxattr;
@@ -314,6 +316,8 @@
   __interceptor_pthread_spin_lock;
   __interceptor_pthread_spin_trylock;
   __interceptor_pthread_spin_unlock;
+  __interceptor_pthread_timedjoin_np;
+  __interceptor_pthread_tryjoin_np;
   __interceptor_ptrace;
   __interceptor_puts;
   __interceptor_pvalloc;
@@ -358,11 +362,15 @@
   __interceptor_sendmmsg;
   __interceptor_sendmsg;
   __interceptor_sendto;
+  __interceptor_setbuf;
+  __interceptor_setbuffer;
   __interceptor_setgrent;
   __interceptor_setitimer;
   __interceptor_setjmp;
+  __interceptor_setlinebuf;
   __interceptor_setlocale;
   __interceptor_setpwent;
+  __interceptor_setvbuf;
   __interceptor_shmctl;
   __interceptor_sigaction;
   __interceptor_sigblock;
@@ -1312,6 +1320,8 @@
   fclose;
   fdopen;
   fflush;
+  fgetgrent_r;
+  fgetpwent_r;
   fgets;
   fgetxattr;
   flistxattr;
@@ -1505,6 +1515,8 @@
   pthread_spin_lock;
   pthread_spin_trylock;
   pthread_spin_unlock;
+  pthread_timedjoin_np;
+  pthread_tryjoin_np;
   ptrace;
   puts;
   pvalloc;
@@ -1547,11 +1559,15 @@
   sendmmsg;
   sendmsg;
   sendto;
+  setbuf;
+  setbuffer;
   setgrent;
   setitimer;
   setjmp;
+  setlinebuf;
   setlocale;
   setpwent;
+  setvbuf;
   shmctl;
   sigaction;
   sigblock;

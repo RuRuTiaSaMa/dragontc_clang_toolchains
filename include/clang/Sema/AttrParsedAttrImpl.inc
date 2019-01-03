@@ -338,7 +338,7 @@ static bool checkArcWeakrefUnavailableAppertainsTo(Sema &S, const ParsedAttr &At
 }
 
 static void matchRulesForArcWeakrefUnavailable(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkArgumentWithTypeTagAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -442,7 +442,7 @@ static bool checkAssumeAlignedAppertainsTo(Sema &S, const ParsedAttr &Attr, cons
 }
 
 static void matchRulesForAssumeAligned(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
 }
 
@@ -462,11 +462,11 @@ static void matchRulesForAvailability(llvm::SmallVectorImpl<std::pair<attr::Subj
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_field, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_namespace, /*IsSupported=*/LangOpts.CPlusPlus));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_category, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_category, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_type_alias, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
@@ -617,7 +617,7 @@ static bool checkCUDALaunchBoundsAppertainsTo(Sema &S, const ParsedAttr &Attr, c
 }
 
 static void matchRulesForCUDALaunchBounds(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_hasType_functionType, /*IsSupported=*/true));
 }
 
@@ -703,7 +703,7 @@ static bool checkCarriesDependencyAppertainsTo(Sema &S, const ParsedAttr &Attr, 
 
 static void matchRulesForCarriesDependency(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_is_parameter, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
 }
 
@@ -840,7 +840,16 @@ static void matchRulesForDLLExport(llvm::SmallVectorImpl<std::pair<attr::Subject
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
+}
+
+static bool checkDLLExportStaticLocalAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<FunctionDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "functions";
+    return false;
+  }
+  return true;
 }
 
 static bool checkDLLImportAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -856,7 +865,16 @@ static void matchRulesForDLLImport(llvm::SmallVectorImpl<std::pair<attr::Subject
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
+}
+
+static bool checkDLLImportStaticLocalAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<FunctionDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "functions";
+    return false;
+  }
+  return true;
 }
 
 static bool checkDestructorAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -892,7 +910,7 @@ static bool checkDisableTailCallsAppertainsTo(Sema &S, const ParsedAttr &Attr, c
 
 static void matchRulesForDisableTailCalls(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkEmptyBasesAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -984,11 +1002,11 @@ static void matchRulesForExternalSourceSymbol(llvm::SmallVectorImpl<std::pair<at
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_field, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_namespace, /*IsSupported=*/LangOpts.CPlusPlus));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_category, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_category, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_type_alias, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
@@ -1098,7 +1116,7 @@ static bool checkIBActionAppertainsTo(Sema &S, const ParsedAttr &Attr, const Dec
 }
 
 static void matchRulesForIBAction(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method_is_instance, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method_is_instance, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkIFuncAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1320,7 +1338,7 @@ static bool checkMinSizeAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl
 
 static void matchRulesForMinSize(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkMinVectorWidthAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1448,7 +1466,7 @@ static bool checkNSConsumesSelfAppertainsTo(Sema &S, const ParsedAttr &Attr, con
 }
 
 static void matchRulesForNSConsumesSelf(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkNakedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1503,7 +1521,7 @@ static bool checkNoDebugAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl
 
 static void matchRulesForNoDebug(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_hasType_functionType, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_not_is_parameter, /*IsSupported=*/true));
 }
 
@@ -1609,7 +1627,7 @@ static bool checkNoSanitizeAppertainsTo(Sema &S, const ParsedAttr &Attr, const D
 
 static void matchRulesForNoSanitize(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_is_global, /*IsSupported=*/true));
 }
 
@@ -1701,6 +1719,64 @@ static void matchRulesForNotTailCalled(llvm::SmallVectorImpl<std::pair<attr::Sub
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
 }
 
+static bool checkOSConsumedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<ParmVarDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "parameters";
+    return false;
+  }
+  return true;
+}
+
+static void matchRulesForOSConsumed(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_is_parameter, /*IsSupported=*/true));
+}
+
+static bool isNonStaticCXXMethod(const Decl *D) {
+  if (const auto *S = dyn_cast<CXXMethodDecl>(D))
+    return !S->isStatic();
+  return false;
+}
+
+static bool checkOSConsumesThisAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isNonStaticCXXMethod(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "non-static member functions";
+    return false;
+  }
+  return true;
+}
+
+static bool checkOSReturnsNotRetainedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<FunctionDecl>(D) && !isa<ObjCMethodDecl>(D) && !isa<ObjCPropertyDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "functions, Objective-C methods, and Objective-C properties";
+    return false;
+  }
+  return true;
+}
+
+static void matchRulesForOSReturnsNotRetained(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
+}
+
+static bool checkOSReturnsRetainedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<FunctionDecl>(D) && !isa<ObjCMethodDecl>(D) && !isa<ObjCPropertyDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "functions, Objective-C methods, and Objective-C properties";
+    return false;
+  }
+  return true;
+}
+
+static void matchRulesForOSReturnsRetained(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
+}
+
 static bool checkObjCBoxableAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
   if (!D || (!isa<RecordDecl>(D))) {
     S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
@@ -1782,7 +1858,7 @@ static bool checkObjCExceptionAppertainsTo(Sema &S, const ParsedAttr &Attr, cons
 }
 
 static void matchRulesForObjCException(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCExplicitProtocolImplAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1795,7 +1871,7 @@ static bool checkObjCExplicitProtocolImplAppertainsTo(Sema &S, const ParsedAttr 
 }
 
 static void matchRulesForObjCExplicitProtocolImpl(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCMethodFamilyAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1808,7 +1884,7 @@ static bool checkObjCMethodFamilyAppertainsTo(Sema &S, const ParsedAttr &Attr, c
 }
 
 static void matchRulesForObjCMethodFamily(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCPreciseLifetimeAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1834,7 +1910,7 @@ static bool checkObjCRequiresPropertyDefsAppertainsTo(Sema &S, const ParsedAttr 
 }
 
 static void matchRulesForObjCRequiresPropertyDefs(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCRequiresSuperAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1847,7 +1923,7 @@ static bool checkObjCRequiresSuperAppertainsTo(Sema &S, const ParsedAttr &Attr, 
 }
 
 static void matchRulesForObjCRequiresSuper(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCReturnsInnerPointerAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1860,8 +1936,8 @@ static bool checkObjCReturnsInnerPointerAppertainsTo(Sema &S, const ParsedAttr &
 }
 
 static void matchRulesForObjCReturnsInnerPointer(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCRootClassAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1874,7 +1950,7 @@ static bool checkObjCRootClassAppertainsTo(Sema &S, const ParsedAttr &Attr, cons
 }
 
 static void matchRulesForObjCRootClass(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCRuntimeNameAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1887,8 +1963,8 @@ static bool checkObjCRuntimeNameAppertainsTo(Sema &S, const ParsedAttr &Attr, co
 }
 
 static void matchRulesForObjCRuntimeName(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_protocol, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCRuntimeVisibleAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1901,7 +1977,7 @@ static bool checkObjCRuntimeVisibleAppertainsTo(Sema &S, const ParsedAttr &Attr,
 }
 
 static void matchRulesForObjCRuntimeVisible(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkObjCSubclassingRestrictedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1914,7 +1990,7 @@ static bool checkObjCSubclassingRestrictedAppertainsTo(Sema &S, const ParsedAttr
 }
 
 static void matchRulesForObjCSubclassingRestricted(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_interface, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkOpenCLAccessAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -1999,7 +2075,7 @@ static bool checkOptimizeNoneAppertainsTo(Sema &S, const ParsedAttr &Attr, const
 
 static void matchRulesForOptimizeNone(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkOverloadableAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -2317,7 +2393,7 @@ static bool checkReturnsNonNullAppertainsTo(Sema &S, const ParsedAttr &Attr, con
 }
 
 static void matchRulesForReturnsNonNull(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
 }
 
@@ -2375,8 +2451,8 @@ static unsigned SectionAttrSpellingMap(const ParsedAttr &Attr) {
 static void matchRulesForSection(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_is_global, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_property, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkSetTypestateAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -2399,6 +2475,20 @@ static bool checkSharedTrylockFunctionAppertainsTo(Sema &S, const ParsedAttr &At
     return false;
   }
   return true;
+}
+
+static bool checkSpeculativeLoadHardeningAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isa<FunctionDecl>(D) && !isa<ObjCMethodDecl>(D))) {
+    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
+      << Attr << "functions and Objective-C methods";
+    return false;
+  }
+  return true;
+}
+
+static void matchRulesForSpeculativeLoadHardening(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkSwiftContextAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -2542,6 +2632,15 @@ static unsigned TryAcquireCapabilityAttrSpellingMap(const ParsedAttr &Attr) {
   }
 }
 
+static bool checkUninitializedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
+  if (!D || (!isLocalVar(D))) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << "local variables";
+    return false;
+  }
+  return true;
+}
+
 static bool checkUnusedAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
   if (!D || (!isa<VarDecl>(D) && !isa<ObjCIvarDecl>(D) && !isa<TypeDecl>(D) && !isa<EnumDecl>(D) && !isa<EnumConstantDecl>(D) && !isa<LabelDecl>(D) && !isa<FieldDecl>(D) && !isa<ObjCMethodDecl>(D) && !isFunctionLike(D))) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -2670,7 +2769,7 @@ static unsigned WarnUnusedResultAttrSpellingMap(const ParsedAttr &Attr) {
 }
 
 static void matchRulesForWarnUnusedResult(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_enum, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_hasType_functionType, /*IsSupported=*/true));
@@ -2751,7 +2850,7 @@ static unsigned XRayInstrumentAttrSpellingMap(const ParsedAttr &Attr) {
 
 static void matchRulesForXRayInstrument(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static bool checkXRayLogArgsAppertainsTo(Sema &S, const ParsedAttr &Attr, const Decl *D) {
@@ -2765,10 +2864,11 @@ static bool checkXRayLogArgsAppertainsTo(Sema &S, const ParsedAttr &Attr, const 
 
 static void matchRulesForXRayLogArgs(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) {
   MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC1));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
 }
 
 static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
+  { 0, 0, 0, 0, 1, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_AArch64VectorPcs
   { 2, 0, 0, 0, 0, 0, 0, 1, checkAMDGPUFlatWorkGroupSizeAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForAMDGPUFlatWorkGroupSize },  // AT_AMDGPUFlatWorkGroupSize
   { 1, 0, 0, 0, 0, 0, 0, 1, checkAMDGPUNumSGPRAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForAMDGPUNumSGPR },  // AT_AMDGPUNumSGPR
   { 1, 0, 0, 0, 0, 0, 0, 1, checkAMDGPUNumVGPRAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForAMDGPUNumVGPR },  // AT_AMDGPUNumVGPR
@@ -2830,7 +2930,9 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 0, 0, 0, 0, 0, 0, 0, 1, checkConsumableSetOnReadAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForConsumableSetOnRead },  // AT_ConsumableSetOnRead
   { 0, 0, 0, 0, 0, 0, 0, 1, checkConvergentAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForConvergent },  // AT_Convergent
   { 0, 0, 0, 1, 0, 0, 1, 1, checkDLLExportAppertainsTo, defaultDiagnoseLangOpts, isTargetx86x86_64armthumbaarch64Win32, defaultSpellingIndexToSemanticSpelling, matchRulesForDLLExport },  // AT_DLLExport
+  { 0, 0, 0, 1, 0, 0, 0, 0, checkDLLExportStaticLocalAppertainsTo, defaultDiagnoseLangOpts, isTargetx86x86_64armthumbaarch64Win32, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_DLLExportStaticLocal
   { 0, 0, 0, 1, 0, 0, 1, 1, checkDLLImportAppertainsTo, defaultDiagnoseLangOpts, isTargetx86x86_64armthumbaarch64Win32, defaultSpellingIndexToSemanticSpelling, matchRulesForDLLImport },  // AT_DLLImport
+  { 0, 0, 0, 1, 0, 0, 0, 0, checkDLLImportStaticLocalAppertainsTo, defaultDiagnoseLangOpts, isTargetx86x86_64armthumbaarch64Win32, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_DLLImportStaticLocal
   { 0, 2, 0, 0, 0, 0, 1, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Deprecated
   { 0, 1, 0, 0, 0, 0, 1, 1, checkDestructorAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForDestructor },  // AT_Destructor
   { 3, 0, 0, 0, 0, 0, 0, 0, checkDiagnoseIfAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_DiagnoseIf
@@ -2889,6 +2991,7 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 0, 0, 0, 0, 0, 0, 0, 0, checkNoAliasAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_NoAlias
   { 0, 0, 0, 0, 0, 0, 1, 1, checkNoCommonAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoCommon },  // AT_NoCommon
   { 0, 0, 0, 0, 0, 0, 1, 1, checkNoDebugAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoDebug },  // AT_NoDebug
+  { 0, 0, 0, 0, 1, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_NoDeref
   { 0, 0, 0, 0, 0, 0, 0, 1, checkNoDestroyAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoDestroy },  // AT_NoDestroy
   { 0, 0, 0, 0, 0, 0, 0, 1, checkNoDuplicateAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoDuplicate },  // AT_NoDuplicate
   { 0, 0, 0, 0, 0, 0, 0, 1, checkNoEscapeAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoEscape },  // AT_NoEscape
@@ -2905,6 +3008,10 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 0, 0, 0, 0, 0, 0, 1, 1, checkNoThrowAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNoThrow },  // AT_NoThrow
   { 0, 15, 0, 0, 0, 0, 1, 0, checkNonNullAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_NonNull
   { 0, 0, 0, 0, 0, 0, 0, 1, checkNotTailCalledAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForNotTailCalled },  // AT_NotTailCalled
+  { 0, 0, 0, 0, 0, 0, 0, 1, checkOSConsumedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForOSConsumed },  // AT_OSConsumed
+  { 0, 0, 0, 0, 0, 0, 0, 0, checkOSConsumesThisAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_OSConsumesThis
+  { 0, 0, 0, 0, 0, 0, 0, 1, checkOSReturnsNotRetainedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForOSReturnsNotRetained },  // AT_OSReturnsNotRetained
+  { 0, 0, 0, 0, 0, 0, 0, 1, checkOSReturnsRetainedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForOSReturnsRetained },  // AT_OSReturnsRetained
   { 0, 0, 0, 0, 0, 0, 0, 1, checkObjCBoxableAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForObjCBoxable },  // AT_ObjCBoxable
   { 1, 0, 0, 0, 0, 0, 0, 1, checkObjCBridgeAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForObjCBridge },  // AT_ObjCBridge
   { 1, 0, 0, 0, 0, 0, 0, 1, checkObjCBridgeMutableAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForObjCBridgeMutable },  // AT_ObjCBridgeMutable
@@ -2975,6 +3082,7 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 0, 2, 0, 0, 0, 0, 1, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Sentinel
   { 1, 0, 0, 0, 0, 0, 0, 1, checkSetTypestateAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForSetTypestate },  // AT_SetTypestate
   { 1, 15, 0, 0, 0, 0, 0, 0, checkSharedTrylockFunctionAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_SharedTrylockFunction
+  { 0, 0, 0, 0, 0, 0, 0, 1, checkSpeculativeLoadHardeningAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, matchRulesForSpeculativeLoadHardening },  // AT_SpeculativeLoadHardening
   { 0, 0, 0, 0, 1, 0, 1, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_StdCall
   { 0, 15, 0, 0, 0, 1, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Suppress
   { 0, 0, 0, 0, 1, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_SwiftCall
@@ -2997,6 +3105,7 @@ static const ParsedAttrInfo AttrInfoMap[ParsedAttr::UnknownAttribute + 1] = {
   { 1, 0, 0, 0, 0, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_TypeVisibility
   { 0, 0, 0, 0, 1, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_UPtr
   { 0, 1, 0, 0, 0, 0, 0, 0, defaultAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Unavailable
+  { 0, 0, 0, 0, 0, 0, 0, 0, checkUninitializedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Uninitialized
   { 0, 0, 0, 0, 0, 0, 1, 0, checkUnusedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, UnusedAttrSpellingMap, nullptr },  // AT_Unused
   { 0, 0, 0, 0, 0, 0, 1, 0, checkUsedAppertainsTo, defaultDiagnoseLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Used
   { 1, 0, 0, 0, 0, 0, 0, 0, checkUuidAppertainsTo, checkMicrosoftExtBorlandLangOpts, defaultTargetRequirements, defaultSpellingIndexToSemanticSpelling, nullptr },  // AT_Uuid
